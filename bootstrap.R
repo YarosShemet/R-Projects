@@ -1,9 +1,6 @@
-### ZALICZENIE - ekonometria praktyczna ###
 
-### Zast¹p liczbê w nawiasie poni¿ej w³asnym numerem indeksu
-set.seed(108887)
 
-### Wygeneruj zbiór danych
+### Wygeneruj zbiÃ³r danych
 N <- 200
 sigma <- 1
 epsilon <- rnorm(n = N, mean = 0, sd = sigma)
@@ -26,22 +23,22 @@ kredyt <- generate_y_kredyt(kredyt_0, beta, stopa, epsilon)
 makro <- data.frame(kredyt = kredyt[2:(N+1)], L_kredyt = kredyt[1:N], stopa)
 rm(sigma, epsilon, beta, kredyt)
 
-#Kredyt w zale¿noœci od stopy - model ADL
+#Kredyt w zaleÂ¿noÅ“ci od stopy - model ADL
 ADL_kredyt <- lm(kredyt ~ L_kredyt + stopa, data = makro)
 summary(ADL_kredyt)
 ADL_kredyt_tabela <- summary(ADL_kredyt)
 beta_hat <- ADL_kredyt$coefficients
 sigma_hat <- ADL_kredyt_tabela$sigma
 
-# rozwi¹zanie -------------------------------------------------------------
+# rozwiÂ¹zanie -------------------------------------------------------------
 #funkcja reakcji na impuls dla i-tego okresu to (b1)^i * b2, bo mamy model ADL
 #dla pierwszego okresu reakcja na impuls wyniesie b2
-#sk³adnik losowy wynosi 0
+#skÂ³adnik losowy wynosi 0
 efekt_krancowy_0 <- beta_hat[3]
 kredyt_stopa_0 <- as.matrix(generate_y_kredyt(kredyt_0, beta_hat, rep(0, 10), rep(0,10))[2:11])
 kredyt_stopa_1 <- as.matrix(generate_y_kredyt(kredyt_0, beta_hat, rep(1, 10), rep(0,10))[2:11])
 kredyt_roznica <- kredyt_stopa_1-kredyt_stopa_0 #skumulowana funkcja reakcji na impuls dla i-tego okresu
-#parametryczny bootstrap - zak³adamy, ¿e rozk³ad sk³adnika losowego - normalny
+#parametryczny bootstrap - zakÂ³adamy, Â¿e rozkÂ³ad skÂ³adnika losowego - normalny
 R <- 1000
 kredyt_roznica_R <- matrix(NA, ncol = 10, nrow = R)
 for (rr in 1:R) {
@@ -66,30 +63,30 @@ dziedzina <- 1:10
 plot(dziedzina,
      kredyt_roznica, 
      type = "l", lty = "dashed",
-     xlab = "kwarta³", ylab = "skumulowana reakcja na impuls kredytu", ylim = c(-3, 0))
+     xlab = "kwartaÂ³", ylab = "skumulowana reakcja na impuls kredytu", ylim = c(-3, 0))
 points(kredyt_roznica, pch=16, col="red")
 lines(1:10, confint$dolna_granica_90, col = sgh_zielony, lty = "dashed")
 lines(1:10, confint$gorna_granica_90, col = sgh_zielony, lty = "dashed")
 
 
 # dygresje-------------------------------------------------------------------------
-#dowód, ¿e IRF poprawna
+#dowÃ³d, Â¿e IRF poprawna
 kredyt_krancowe <- matrix(NA, nrow=10, ncol=1)
 kredyt_krancowe[1] <- beta_hat[3]
 for (ii in 2:10) {
   kredyt_krancowe[ii] <- kredyt_roznica[ii]-kredyt_roznica[ii-1]
 }
-#kredyt_krancowe obliczony jest ze skumulowanej IRF, a jeœli ze wzoru (b1)^i * b2
+#kredyt_krancowe obliczony jest ze skumulowanej IRF, a jeÅ“li ze wzoru (b1)^i * b2
 kredyt_krancowe_def <- matrix(NA, nrow=10, ncol=1)
 for (ii in 1:10) {
   kredyt_krancowe_def[ii] <- beta_hat[2]^(ii-1)*beta_hat[3]
 }
-cbind(kredyt_krancowe, kredyt_krancowe_def) #funkcja IRF zosta³a obliczona poprawnie
+cbind(kredyt_krancowe, kredyt_krancowe_def) #funkcja IRF zostaÂ³a obliczona poprawnie
 
 
-#czy oszacowania punktowe d¹¿¹ do mno¿nika d³ugookresowego?
+#czy oszacowania punktowe dÂ¹Â¿Â¹ do mnoÂ¿nika dÂ³ugookresowego?
 mnoznik_dlugookresowy <- beta_hat[3]/(1-beta_hat[2])
-#prognoza na 100 kwarta³ów do przodu
+#prognoza na 100 kwartaÂ³Ã³w do przodu
 efekt_krancowy_0 <- beta_hat[3]
 kredyt_stopa_0 <- as.matrix(generate_y_kredyt(kredyt_0, beta_hat, rep(0, 100), rep(0,100))[2:101])
 kredyt_stopa_1 <- as.matrix(generate_y_kredyt(kredyt_0, beta_hat, rep(1, 100), rep(0,100))[2:101])
@@ -119,7 +116,8 @@ dziedzina <- 1:100
 plot(dziedzina,
      kredyt_roznica, 
      type = "l", lty = "dashed",
-     xlab = "kwarta³", ylab = "skumulowana funkcja reakcji na impuls", ylim = c(-5, 1))
+     xlab = "kwartaÂ³", ylab = "skumulowana funkcja reakcji na impuls", ylim = c(-5, 1))
 lines(1:100, confint$dolna_granica_90, col = sgh_zielony, lty = "dashed")
 lines(1:100, confint$gorna_granica_90, col = sgh_zielony, lty = "dashed")
 cbind(mnoznik_dlugookresowy, kredyt_roznica[100])
+
