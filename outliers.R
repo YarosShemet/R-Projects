@@ -1,5 +1,4 @@
 rm(list=ls())
-set.seed(108887)
 
 n<-300
 X <-rnorm(n, mean = 15, sd = 3) 
@@ -17,65 +16,65 @@ points(Y[75]~X[75], col="red", pch=16)
 text(X[25], Y[25], '25', pos=3)
 text(X[50], Y[50], '50', pos=3)
 text(X[75], Y[75], '75', pos=1)
-#analizuj¹c powy¿szy wykres mo¿na postawiæ tezê,
-#¿e obserwacje 25 i 75 s¹ odstaj¹ce (obserwujemy du¿e reszty),
-#a obserwacja 50 - wp³ywowa (nie ma du¿ych reszt, mo¿e ona wnosiæ istotne informacje i prawdopodobnie nie powsta³a w wyniku b³êdu)
+#analizujÄ…c powyÅ¼szy wykres moÅ¼na postawiÄ‡ tezÄ™,
+#Å¼e obserwacje 25 i 75 sÄ… odstajÄ…ce (obserwujemy duÅ¼e reszty),
+#a obserwacja 50 - wpÅ‚ywowa (nie ma duÅ¼ych reszt, moÅ¼e ona wnosiÄ‡ istotne informacje i prawdopodobnie nie powstaÅ‚a w wyniku bÅ‚Ä™du)
 
 library(olsrr)
 library(car)
 qqplot(fit$residuals,fit$fitted.values)
 qqPlot(fit, main="QQ Plot")
-#pierwszy etap diagnostyki - wykres kwantylowy - pokazuje istotne odchylenia na krañcach wykresu dla obserwacji 25 i 75,
-#co wskazuje na to, ¿e to s¹ odstaj¹ce obserwacje
+#pierwszy etap diagnostyki - wykres kwantylowy - pokazuje istotne odchylenia na kraÅ„cach wykresu dla obserwacji 25 i 75,
+#co wskazuje na to, Å¼e to sÄ… odstajÄ…ce obserwacje
 
 leveragePlots(fit) 
-#wykres dŸwigni pokazuje, które obserwacje maj¹ najwiêkszy wp³yw na oszacowanie parametrów
-#widzimy, ¿e 50-ta obserwacja znajduje siê na krañcu wykresu, a wiêc ma wiêksze znaczenie ni¿ pozosta³e 
+#wykres dÅºwigni pokazuje, ktÃ³re obserwacje majÄ… najwiÄ™kszy wpÅ‚yw na oszacowanie parametrÃ³w
+#widzimy, Å¼e 50-ta obserwacja znajduje siÄ™ na kraÅ„cu wykresu, a wiÄ™c ma wiÄ™ksze znaczenie niÅ¼ pozostaÅ‚e 
 
 outlierTest(fit)
-#test statystyczny Bonferonni pozwala odrzuciæ H0 o niewystêpowaniu wartoœci odstaj¹cej dla 25 i 75 obserwacji
+#test statystyczny Bonferonni pozwala odrzuciÄ‡ H0 o niewystÄ™powaniu wartoÅ›ci odstajÄ…cej dla 25 i 75 obserwacji
 
 ols_plot_resid_stud(fit)
-#odnotujemy, ¿e studentyzowane reszty dla obserwacji 25 nie mieszcz¹ siê w przedziale [-2;2]
-#ponadto 25-ta zosta³a okreœlona jako wartoœæ odstaj¹ca
+#odnotujemy, Å¼e studentyzowane reszty dla obserwacji 25 nie mieszczÄ… siÄ™ w przedziale [-2;2]
+#ponadto 25-ta zostaÅ‚a okreÅ›lona jako wartoÅ›Ä‡ odstajÄ…ca
 
 ols_plot_resid_lev(fit) 
-#studentyzowane reszty na tle dŸwigni wskazuj¹, ¿e 25 i 75 obserwacje s¹ odstaj¹cymi
-#obserwacja 50 jest i odstaj¹c¹, i wp³ywow¹
+#studentyzowane reszty na tle dÅºwigni wskazujÄ…, Å¼e 25 i 75 obserwacje sÄ… odstajÄ…cymi
+#obserwacja 50 jest i odstajÄ…cÄ…, i wpÅ‚ywowÄ…
 
 ols_plot_cooksd_bar(fit)
 ols_plot_cooksd_chart(fit)
-#metoda odleg³oœci Cooka jednoznacznie potwierdza, ¿e wszystkie badane obserwacje s¹ odstaj¹cymi
+#metoda odlegÅ‚oÅ›ci Cooka jednoznacznie potwierdza, Å¼e wszystkie badane obserwacje sÄ… odstajÄ…cymi
 
 ols_plot_dffits(fit)
-#metoda DFFITS pokazuje jak zmieni¹ siê wartoœci teoretyczne, jesli usuniemy jedn¹ obserwacj¹
-#wszyskie badane obserwacje cechuje ponadprogowy wp³yw na wartoœæ teoretyczn¹ przy wy³¹czaniu z modelu
+#metoda DFFITS pokazuje jak zmieniÄ… siÄ™ wartoÅ›ci teoretyczne, jesli usuniemy jednÄ… obserwacjÄ…
+#wszyskie badane obserwacje cechuje ponadprogowy wpÅ‚yw na wartoÅ›Ä‡ teoretycznÄ… przy wyÅ‚Ä…czaniu z modelu
 
 ols_plot_dfbetas(fit)
-#metoda DFBETA pokazuje jak zmieni¹ siê oszacowania parametrów, jeœli usuniemy jedn¹ obserwacj¹
-#wed³ug tej metody obserwacje 25 i 50 s¹ wp³ywowe, przy tym obserwacja 75 ledwie przekracza próg, co pozwala w¹tpiæ o jej istotnym wp³ywie
+#metoda DFBETA pokazuje jak zmieniÄ… siÄ™ oszacowania parametrÃ³w, jeÅ›li usuniemy jednÄ… obserwacjÄ…
+#wedÅ‚ug tej metody obserwacje 25 i 50 sÄ… wpÅ‚ywowe, przy tym obserwacja 75 ledwie przekracza prÃ³g, co pozwala wÄ…tpiÄ‡ o jej istotnym wpÅ‚ywie
 
 fit_drop_outliers <- lm(Y[-c(25, 75)]~X[-c(25, 75)])
 fit_drop_all <- lm(Y[-c(25, 50, 75)]~X[-c(25, 50, 75)])
 summary_coef <- cbind(coef(fit), coef(fit_drop_outliers), coef(fit_drop_all))
-colnames(summary_coef) <- c("pe³ny zbiór", "bez odstaj¹cych niewp³ywowych", "bez wszystkich odstaj¹cych")
+colnames(summary_coef) <- c("peÅ‚ny zbiÃ³r", "bez odstajÄ…cych niewpÅ‚ywowych", "bez wszystkich odstajÄ…cych")
 (summary_coef)
-#wykorzysta³em metodê usuniêcia podejrzanych obserwacji, jednak nie jestem pewien czy te obserwacje s¹ rzeczywiœcie b³êdne
-#w taki sposób mogê utraciæ cennê informacje, zw³aszcza w przypadku 50-tej obserwacji, która jest i wp³ywowa, i odstaj¹ca
+#wykorzystaÅ‚em metodÄ™ usuniÄ™cia podejrzanych obserwacji, jednak nie jestem pewien czy te obserwacje sÄ… rzeczywiÅ›cie bÅ‚Ä™dne
+#w taki sposÃ³b mogÄ™ utraciÄ‡ cennÄ™ informacje, zwÅ‚aszcza w przypadku 50-tej obserwacji, ktÃ³ra jest i wpÅ‚ywowa, i odstajÄ…ca
 
 library(robustbase)
 library(L1pack)
 fit_LTS <- ltsReg(Y~X, alpha=0.95)
-#Metoda LTS usuwa obserwacje z najwy¿szymi resztami, zostawiaj¹c przy tym 95% pozostaje w próbie
+#Metoda LTS usuwa obserwacje z najwyÅ¼szymi resztami, zostawiajÄ…c przy tym 95% pozostaje w prÃ³bie
 
 fit_LAD <- lad(Y~X)
-#Metoda LAD dopasowuje parametry do mediany, która jest bardziej odporna na wystêpowanie wartoœci odstaj¹cych
+#Metoda LAD dopasowuje parametry do mediany, ktÃ³ra jest bardziej odporna na wystÄ™powanie wartoÅ›ci odstajÄ…cych
 
 reg_coef<-cbind(coef(fit),coef(fit_LTS),coef(fit_LAD))
 colnames(reg_coef)<-c("OLS","LTS","LAD")
 (reg_coef)
-#w przypadku metody LTS widzimy, ¿e oszacowanie parametrów s¹ wy¿sze i zbli¿one do tych, co otrzymaliœmy po usuniêciu wszystkich podejrzanych
-#dla metody LAD oszacowania parametrów znacz¹co siê ró¿ni¹ od KMNK, zawy¿aj¹c przy tym oszacowanie przy X i zani¿aj¹c sta³¹
+#w przypadku metody LTS widzimy, Å¼e oszacowanie parametrÃ³w sÄ… wyÅ¼sze i zbliÅ¼one do tych, co otrzymaliÅ›my po usuniÄ™ciu wszystkich podejrzanych
+#dla metody LAD oszacowania parametrÃ³w znaczÄ…co siÄ™ rÃ³Å¼niÄ… od KMNK, zawyÅ¼ajÄ…c przy tym oszacowanie przy X i zaniÅ¼ajÄ…c staÅ‚Ä…
 
 
 # Zadanie 2 ---------------------------------------------------------------
@@ -84,23 +83,22 @@ dane_all <- read.csv("TaylorRule.csv", sep =";", dec = ".")
 dane <- dane_all[, 3:ncol(dane_all)]
 dane <- dane %>% relocate(USA_IR, .after = GBR_IR)
 attach(dane)
-#mój indeks to 108887, wiêc Norwegia - mój kraj do analizy
 fit <- lm(NOR_INF~NOR_IR+NOR_Y)
 summary(fit)
 plot(resid(fit), type="l")
 avPlots(fit)
 library(strucchange)
-Chow_test_half <- sctest(NOR_INF~NOR_IR+NOR_Y, point = round(nrow(dane)/2), type = "Chow")$p.value #w po³owie próby
-Chow_test_crisis <- sctest(NOR_INF~NOR_IR+NOR_Y, point = 106, type = "Chow")$p.value #jako miejsce dla porównania wybra³em 10/2008 - czyli wy¿ kryzysu ekonomicznego
-#w obu przypadkach muszê odrzuciæ H0 na rzecz H1, która mówi ¿e wystêpuje zmiana strukturalna
+Chow_test_half <- sctest(NOR_INF~NOR_IR+NOR_Y, point = round(nrow(dane)/2), type = "Chow")$p.value #w poÅ‚owie prÃ³by
+Chow_test_crisis <- sctest(NOR_INF~NOR_IR+NOR_Y, point = 106, type = "Chow")$p.value #jako miejsce dla porÃ³wnania wybraÅ‚em 10/2008 - czyli wyÅ¼ kryzysu ekonomicznego
+#w obu przypadkach muszÄ™ odrzuciÄ‡ H0 na rzecz H1, ktÃ³ra mÃ³wi Å¼e wystÄ™puje zmiana strukturalna
 #tabelka z p-value
-sctest(fit) #ogólny test do ca³ego modelu
+sctest(fit) #ogÃ³lny test do caÅ‚ego modelu
 breakpoints(NOR_INF~NOR_IR+NOR_Y) 
-#12/2003, 10/2007, 03/2012, 12/2016 - punkty w czasie, gdzie wyst¹pi³a zmiana strukturalna
-#czyli mniej wiêcej ka¿de 4-5 lat odbywa³a siê zmiana strukturalna
-#wi¹¿ê to z wprowadzeniem nowej polityki monetarnej ka¿de 5 lat (typowy okres dla analiz makroekonomicznych), choæ nie znam siê na gospodarce norweskiej
+#12/2003, 10/2007, 03/2012, 12/2016 - punkty w czasie, gdzie wystÄ…piÅ‚a zmiana strukturalna
+#czyli mniej wiÄ™cej kaÅ¼de 4-5 lat odbywaÅ‚a siÄ™ zmiana strukturalna
+#wiÄ…Å¼Ä™ to z wprowadzeniem nowej polityki monetarnej kaÅ¼de 5 lat (typowy okres dla analiz makroekonomicznych), choÄ‡ nie znam siÄ™ na gospodarce norweskiej
 
-#dla dodania zmiennej binarnej wybieram najbli¿szy do zgadniêtego wy¿ej punkt - 94 - 10/2007
+#dla dodania zmiennej binarnej wybieram najbliÅ¼szy do zgadniÄ™tego wyÅ¼ej punkt - 94 - 10/2007
 S<-seq(1, nrow(dane), by=1)
 for (i in 1:nrow(dane)){
   if (S[i]>94){S[i]=1}
@@ -110,10 +108,10 @@ for (i in 1:nrow(dane)){
 fit_bin <- lm(NOR_INF~NOR_IR+NOR_Y+S)
 summary(fit_bin)
 plot(resid(fit_bin), type="l")
-#skorygowany R-kwadrat istotnie siê zwiêkszy³ i dodanie zmiennej binarnej polepszy³o dopasowanie modelu
+#skorygowany R-kwadrat istotnie siÄ™ zwiÄ™kszyÅ‚ i dodanie zmiennej binarnej polepszyÅ‚o dopasowanie modelu
 
 
-#dla ogólnych przypadków
+#dla ogÃ³lnych przypadkÃ³w
 index <- '108887'
 #index <- 'XXXXXX'
 my_sum <- as.integer(substring(index, 5, 5)) + as.integer(substring(index, 6, 6))
@@ -126,7 +124,7 @@ if (my_sum < 10){
 summary(fit_general)
 
 breakpoints_general <- breakpoints(dane[[my_sum]]~dane[[my_sum+11]]+dane[[my_sum+22]])$breakpoints
-selected_breakpoint <- breakpoints_general[round(length(breakpoints_general)/2)] #najbli¿szy do po³owy próby punkt zmiany
+selected_breakpoint <- breakpoints_general[round(length(breakpoints_general)/2)] #najbliÅ¼szy do poÅ‚owy prÃ³by punkt zmiany
 S<-seq(1, nrow(dane), by=1)
 for (i in 1:nrow(dane)){
   if (S[i]>selected_breakpoint){S[i]=1} 
@@ -134,4 +132,5 @@ for (i in 1:nrow(dane)){
   {S[i]=0}
 }
 fit_bin_general <- lm(dane[[my_sum]]~dane[[my_sum+11]]+dane[[my_sum+22]]+S)
+
 summary(fit_bin_general)
