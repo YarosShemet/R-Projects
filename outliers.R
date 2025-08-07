@@ -112,8 +112,7 @@ plot(resid(fit_bin), type="l")
 
 
 #dla ogólnych przypadków
-index <- '108887'
-#index <- 'XXXXXX'
+index <- 'XXXXXX'
 my_sum <- as.integer(substring(index, 5, 5)) + as.integer(substring(index, 6, 6))
 if (my_sum < 10){
   fit_general <- lm(dane[[my_sum]]~dane[[my_sum+11]]+dane[[my_sum+22]])
@@ -134,3 +133,4 @@ for (i in 1:nrow(dane)){
 fit_bin_general <- lm(dane[[my_sum]]~dane[[my_sum+11]]+dane[[my_sum+22]]+S)
 
 summary(fit_bin_general)
+
